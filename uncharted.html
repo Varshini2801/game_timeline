@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Traveler's Security Challenge</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            transition: background-color 1s;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .intro, .level-intro, .question-container, .feedback, .password-container, .level-complete, .game-complete {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .start-btn, .next-btn, .submit-btn, .submit-password-btn, .continue-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+        .start-btn:hover, .next-btn:hover, .submit-btn:hover, .submit-password-btn:hover, .continue-btn:hover {
+            background-color: #2980b9;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .option-btn {
+            background-color: #f0f0f0;
+            border: 2px solid #ddd;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 48%;
+            transition: all 0.3s;
+        }
+        .option-btn:hover {
+            border-color: #3498db;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: white;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .feedback {
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .password-input {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            width: calc(100% - 24px);
+            margin-bottom: 10px;
+        }
+        .password-hint {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+        .collected-letters {
+            font-size: 18px;
+            letter-spacing: 5px;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 10px;
+            border-radius: 4px;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .timer {
+            text-align: center;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .level-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .era-indicator {
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .score-display {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .placeholder-image {
+            background-color: #eee;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 18px;
+        }
+
+        /* Era-specific styling */
+        .past-era {
+            background-color: #f0e6d2;
+        }
+        .present-era {
+            background-color: #e6f0f0;
+        }
+        .future-era {
+            background-color: #e6e6f0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            .options {
+                flex-direction: column;
+            }
+            .option-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="game-container">
+        <!-- Game intro screen -->
+        <div id="intro-screen">
+            <h1>Time Traveler's Security Challenge</h1>
+            <div class="intro">
+                <p>Welcome, Time Agent! A temporal anomaly has fractured our timeline, and phishing scams from all eras are leaking through!</p>
+                <p>Your mission: identify phishing attempts across three time periods to collect the fragments of a temporal access code. Only by completing all three levels will you restore the timeline.</p>
+                <p><strong>How to play:</strong></p>
+                <ul>
+                    <li>Each level features phishing examples from a different time period</li>
+                    <li>Examine each example carefully and determine if it's "Phish" or "Legit"</li>
+                    <li>Each correct answer earns you a letter of the temporal access code</li>
+                    <li>After completing all questions in a level, use the collected letters to form the password</li>
+                    <li>Enter the correct password to proceed to the next era</li>
+                </ul>
+                <p><strong>Remember:</strong> Look for suspicious URLs, poor grammar, urgent requests, generic greetings, and unsecured connections!</p>
+                <button id="start-game" class="start-btn">Begin Mission</button>
+            </div>
+        </div>
+
+        <!-- Level intro screens -->
+        <div id="level-1-intro" class="level-intro past-era" style="display: none;">
+            <h1>Level 1: The Past (1990s-2000s)</h1>
+            <div class="era-indicator">Welcome to the early days of the internet...</div>
+            <p>You've traveled back to the dawn of the digital age where phishing was just beginning. These attacks are more primitive but can still be dangerous!</p>
+            <p>Look for obvious spelling errors, basic forgeries, and crude imitations of early web design.</p>
+            <p>Complete 4 challenges to collect the temporal access code for this era.</p>
+            <button id="start-level-1" class="start-btn">Enter The Past</button>
+        </div>
+
+        <div id="level-2-intro" class="level-intro present-era" style="display: none;">
+            <h1>Level 2: The Present (2020s)</h1>
+            <div class="era-indicator">Welcome to modern-day digital threats...</div>
+            <p>You've arrived in our current time where phishing attacks have become more sophisticated and targeted.</p>
+            <p>Watch for lookalike domains, social engineering tactics, and security indicators like HTTPS.</p>
+            <p>Complete 4 challenges to collect the temporal access code for this era.</p>
+            <button id="start-level-2" class="start-btn">Enter The Present</button>
+        </div>
+
+        <div id="level-3-intro" class="level-intro future-era" style="display: none;">
+            <h1>Level 3: The Future (2040s)</h1>
+            <div class="era-indicator">Welcome to tomorrow's threats...</div>
+            <p>You've jumped forward to a time where AI and advanced technology have transformed both security and threats.</p>
+            <p>Look for deepfake detection clues, quantum encryption markers, and biometric verification gaps.</p>
+            <p>Complete 4 challenges to collect the final temporal access code.</p>
+            <button id="start-level-3" class="start-btn">Enter The Future</button>
+        </div>
+
+        <!-- Game area -->
+        <div id="game-area" style="display: none;">
+            <div class="level-badge" id="current-level-badge">Level 1: The Past</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="level-progress"></div>
+            </div>
+            
+            <div class="score-display">
+                Score: <span id="current-score">0</span>/<span id="total-questions">12</span>
+            </div>
+            
+            <div class="question-container" id="question-container">
+                <h2 id="question-title">Question 1</h2>
+                <p id="question-description">Is this email legitimate or a phishing attempt?</p>
+                
+                <div class="image-container" id="question-image">
+                    <!-- Placeholder for question image -->
+                </div>
+                
+                <div class="options">
+                    <button class="option-btn" data-option="phish">Phishing Attempt</button>
+                    <button class="option-btn" data-option="legit">Legitimate</button>
+                </div>
+            </div>
+            
+            <div class="feedback" id="feedback-container" style="display: none;">
+                <p id="feedback-text"></p>
+                <p id="letter-earned" style="display: none;">You earned the letter: <strong><span id="letter-value"></span></strong></p>
+                <button class="next-btn" id="next-question">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Password entry screen -->
+        <div id="password-container" class="password-container" style="display: none;">
+            <h2>Enter the Temporal Access Code</h2>
+            <div class="password-hint">
+                <p>You've collected these letters: <span id="collected-letters" class="collected-letters"></span></p>
+                <p>Unscramble the letters to form the correct password for this era.</p>
+            </div>
+            <input type="text" id="password-input" class="password-input" placeholder="Enter the access code...">
+            <button class="submit-password-btn" id="submit-password">Submit Access Code</button>
+            <p id="password-feedback" style="color: red; display: none;">Incorrect access code. Try again!</p>
+        </div>
+
+        <!-- Level complete screens -->
+        <div id="level-complete" class="level-complete" style="display: none;">
+            <h2>Level Complete!</h2>
+            <p>You've successfully secured this time period and collected the temporal access code: <strong><span id="level-password"></span></strong></p>
+            <p>Level score: <span id="level-score">0</span>/4</p>
+            <button class="continue-btn" id="continue-next-level">Continue to Next Era</button>
+        </div>
+
+        <!-- Game complete screen -->
+        <div id="game-complete" class="game-complete" style="display: none;">
+            <h1>Timeline Restored!</h1>
+            <p>Congratulations, Time Agent! You've successfully identified phishing threats across all three time periods and restored the integrity of our timeline.</p>
+            <div class="score-display">
+                <p>Final Score: <span id="final-score">0</span>/12</p>
+                <p>Time Agent Rank: <span id="player-rank">Novice</span></p>
+            </div>
+            <p>The three temporal access codes you discovered were:</p>
+            <ul>
+                <li>Past Era: <strong><span id="past-password"></span></strong></li>
+                <li>Present Era: <strong><span id="present-password"></span></strong></li>
+                <li>Future Era: <strong><span id="future-password"></span></strong></li>
+            </ul>
+            <p>Thank you for protecting our digital timeline!</p>
+            <button class="start-btn" id="restart-game">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Game data
+        const gameData = {
+            levels: [
+                {
+                    name: "The Past (1990s-2000s)",
+                    class: "past-era",
+                    password: "MYTH",
+                    questions: [
+                        {
+                            title: "AOL Email (1998)",
+                            description: "You've received this email from AOL. Is it genuine or phishing?",
+                            image: "./aol phish 1.1.jpg",
+                            imageDesc: "AOL email",
+                            correctAnswer: "phish",
+                            explanation: "This is a phishing attempt. Red flags include: spelling errors, generic greeting ('Dear User'), suspicious URL ('aol-security.net' rather than aol.com), and creating urgency.",
+                            letterReward: "H"
+                        },
+                        {
+                            title: "eBay Listing (2002)",
+                            description: "You're looking at this eBay product listing. Is it legitimate?",
+                            image: "./ebay legit 1.2.jpg",
+                            imageDesc: "Ebay email",
+                            correctAnswer: "legit",
+                            explanation: "This appears to be legitimate. It has proper eBay branding from that era, uses HTTPS, has a consistent design with early 2000s eBay, and displays normal pricing.",
+                            letterReward: "Y"
+                        },
+                        {
+                            title: "PayPal Email (2003)",
+                            description: "You've received this payment confirmation from PayPal. Is it legitimate?",
+                            image: "./paypal phish 1.3.jpg",
+                            imageDesc: "PayPal email",
+                            correctAnswer: "phish",
+                            explanation: "This is a phishing attempt. The logo colors are slightly off, it addresses you generically as 'Valued Customer' rather than by name, and the sender email (paypal_secure@mail-paypal.net) is suspicious.",
+                            letterReward: "M"
+                        },
+                        {
+                            title: "Yahoo Login Page (2001)",
+                            description: "You've clicked a link and arrived at this Yahoo login page. Is it safe?",
+                            image: "./yahoo phish 1.4.jpg",
+                            imageDesc: "Yahoo email",
+                            correctAnswer: "phish",
+                            explanation: "This is a phishing attempt. The URL shows 'yah00.com' (with zeros instead of 'o's). While the design looks accurate for the period, there are alignment issues and the logo is pixelated.",
+                            letterReward: "T"
+                        }
+                    ]
+                },
+                {
+                    name: "The Present (2020s)",
+                    class: "present-era",
+                    password: "LIVE",
+                    questions: [
+                        {
+                            title: "Netflix Account Update (2023)",
+                            description: "You received this email from Netflix about payment issues. Is it genuine?",
+                            image: "./netflix phish 2.1.jpg",
+                            imageDesc: "Netflix email",
+                            correctAnswer: "phish",
+                            explanation: "This is a phishing attempt. While the branding looks good, the sender email is suspicious (netfl1x-billing@accounts-update.net), and there's an urgent message threatening account suspension with a generic 'Click Here' button.",
+                            letterReward: "E"
+                        },
+                        {
+                            title: "Amazon Order Confirmation (2024)",
+                            description: "You received this order confirmation from Amazon. Is it legitimate?",
+                            image: "./amazon legit 2.2.jpg",
+                            imageDesc: "Amazon email",
+                            correctAnswer: "legit",
+                            explanation: "This appears legitimate. It has correct Amazon branding, addresses you by name, includes proper order details matching items you ordered, and comes from a genuine amazon.com sender address.",
+                            letterReward: "I"
+                        },
+                        {
+                            title: "Microsoft Teams Notification (2024)",
+                            description: "You received this Microsoft Teams notification about a shared file. Is it safe?",
+                            image: "./microsoft phish 2.3.jpg",
+                            imageDesc: "Microsoft email",
+                            correctAnswer: "phish",
+                            explanation: "This is a phishing attempt. While the branding looks accurate, the link points to 'teams-fileshare.net' (not microsoft.com), uses urgent language ('Sign in immediately'), and has a generic greeting.",
+                            letterReward: "L"
+                        },
+                        {
+                            title: "Apple Sign-In Page (2023)",
+                            description: "You're looking at this Apple ID sign-in page. Is it genuine?",
+                            image: "./apple legit 2.4.jpg",
+                            imageDesc: "Apple email",
+                            correctAnswer: "legit",
+                            explanation: "This appears to be legitimate. It has correct Apple branding, uses HTTPS, displays the proper apple.com domain, and features standard Apple design elements without any inconsistencies.",
+                            letterReward: "V"
+                        }
+                    ]
+                },
+                {
+                    name: "The Future (2040s)",
+                    class: "future-era",
+                    password: "NOVA",
+                    questions: [
+                        {
+                            title: "NeuroLink Biometric Sync (2042)",
+                            description: "Your NeuroLink implant received this synchronization request. Is it legitimate?",
+                            image: "./Quantum phish 3.1.jpg",
+                            imageDesc: "Nova email",
+                            correctAnswer: "phish",
+                            explanation: "This is a phishing attempt. The quantum verification seal is missing, the neural interface icon is asymmetrical (authentic ones are perfectly symmetrical), and it's requesting unusual access permissions that legitimate syncs don't require.",
+                            letterReward: "O"
+                        },
+                        {
+                            title: "Global Digital ID Verification (2045)",
+                            description: "You're looking at this Global Digital ID verification screen. Is it genuine?",
+                            image: "./global legit 3.2.jpg",
+                            imageDesc: "Global Digital email",
+                            correctAnswer: "legit",
+                            explanation: "This appears legitimate. It displays proper quantum encryption markers in the corner, has the correct holographic elements, shows standard permission requests, and the timestamp synchronization is valid.",
+                            letterReward: "A"
+                        },
+                        {
+                            title: "Orbital Bank Transfer (2043)",
+                            description: "You've received this orbital banking transfer notification. Is it safe?",
+                            image: "./orbital bank phish 3.3.jpg",
+                            imageDesc: "Orbital Bank email",
+                            correctAnswer: "phish",
+                            explanation: "This is a phishing attempt. The neural synchronization patterns are irregular (authentic ones have precise patterns), it's requesting excessive biometric access, and the quantum address for the transfer is suspicious.",
+                            letterReward: "N"
+                        },
+                        {
+                            title: "AI Assistant Update (2044)",
+                            description: "Your AI assistant is requesting this critical update. Is it genuine?",
+                            image: "./ai legit 3.4.jpg",
+                            imageDesc: "AI Assistant email",
+                            correctAnswer: "legit",
+                            explanation: "This appears legitimate. It contains a valid cryptographic signature, shows proper neural interface patterns, follows standard security protocols, and includes registered quantum verification.",
+                            letterReward: "V"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Game state
+        let currentLevel = 0;
+        let currentQuestion = 0;
+        let score = 0;
+        let collectedLetters = [];
+        let levelPasswords = [];
+
+        // DOM elements
+        const introScreen = document.getElementById('intro-screen');
+        const gameArea = document.getElementById('game-area');
+        const passwordContainer = document.getElementById('password-container');
+        const levelCompleteScreen = document.getElementById('level-complete');
+        const gameCompleteScreen = document.getElementById('game-complete');
+        const level1Intro = document.getElementById('level-1-intro');
+        const level2Intro = document.getElementById('level-2-intro');
+        const level3Intro = document.getElementById('level-3-intro');
+
+        // Button handlers
+        document.getElementById('start-game').addEventListener('click', () => {
+            introScreen.style.display = 'none';
+            level1Intro.style.display = 'block';
+            document.body.className = 'past-era';
+        });
+
+        document.getElementById('start-level-1').addEventListener('click', () => {
+            level1Intro.style.display = 'none';
+            startLevel(0);
+        });
+
+        document.getElementById('start-level-2').addEventListener('click', () => {
+            level2Intro.style.display = 'none';
+            startLevel(1);
+        });
+
+        document.getElementById('start-level-3').addEventListener('click', () => {
+            level3Intro.style.display = 'none';
+            startLevel(2);
+        });
+
+        document.getElementById('next-question').addEventListener('click', () => {
+            document.getElementById('feedback-container').style.display = 'none';
+            currentQuestion++;
+            
+            const currentLevelData = gameData.levels[currentLevel];
+            if (currentQuestion < currentLevelData.questions.length) {
+                displayQuestion();
+            } else {
+                showPasswordEntry();
+            }
+        });
+
+        document.getElementById('submit-password').addEventListener('click', () => {
+            const userPassword = document.getElementById('password-input').value.toUpperCase();
+            const correctPassword = gameData.levels[currentLevel].password;
+            
+            if (userPassword === correctPassword) {
+                levelPasswords.push(correctPassword);
+                passwordContainer.style.display = 'none';
+                showLevelComplete();
+            } else {
+                document.getElementById('password-feedback').style.display = 'block';
+            }
+        });
+
+        document.getElementById('continue-next-level').addEventListener('click', () => {
+            levelCompleteScreen.style.display = 'none';
+            currentLevel++;
+            
+            if (currentLevel < gameData.levels.length) {
+                currentQuestion = 0;
+                collectedLetters = [];
+                
+                // Show appropriate level intro
+                if (currentLevel === 1) {
+                    level2Intro.style.display = 'block';
+                    document.body.className = 'present-era';
+                } else if (currentLevel === 2) {
+                    level3Intro.style.display = 'block';
+                    document.body.className = 'future-era';
+                }
+            } else {
+                showGameComplete();
+            }
+        });
+
+        document.getElementById('restart-game').addEventListener('click', () => {
+            // Reset game state
+            currentLevel = 0;
+            currentQuestion = 0;
+            score = 0;
+            collectedLetters = [];
+            levelPasswords = [];
+            
+            // Show intro screen
+            gameCompleteScreen.style.display = 'none';
+            introScreen.style.display = 'block';
+            document.body.className = '';
+        });
+
+        // Setup option buttons
+        document.querySelectorAll('.option-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const selectedOption = button.dataset.option;
+                checkAnswer(selectedOption);
+            });
+        });
+
+        // Game functions
+        function startLevel(level) {
+            currentLevel = level;
+            currentQuestion = 0;
+            collectedLetters = [];
+            
+            // Set appropriate class for time period styling
+            document.body.className = gameData.levels[level].class;
+            
+            gameArea.style.display = 'block';
+            displayQuestion();
+            updateLevelBadge();
+        }
+
+        function displayQuestion() {
+            const question = gameData.levels[currentLevel].questions[currentQuestion];
+            document.getElementById('question-title').textContent = question.title;
+            document.getElementById('question-description').textContent = question.description;
+            
+            // Update the image placeholder with description
+            const imageContainer = document.getElementById('question-image');
+            imageContainer.innerHTML = `
+                <img src="${question.image}" alt="Phishing example" />
+                <p style="font-size: 12px; color: #777; text-align: left; margin-top: 10px;">
+                    <strong>What you're seeing:</strong> ${question.imageDesc}
+                </p>
+            `;
+            
+            // Update progress bar
+            const progressPercent = (currentQuestion / gameData.levels[currentLevel].questions.length) * 100;
+            document.getElementById('level-progress').style.width = `${progressPercent}%`;
+            
+            // Reset option buttons
+            document.querySelectorAll('.option-btn').forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+        }
+
+        function checkAnswer(selectedOption) {
+            const question = gameData.levels[currentLevel].questions[currentQuestion];
+            const isCorrect = selectedOption === question.correctAnswer;
+            const feedbackContainer = document.getElementById('feedback-container');
+            const feedbackText = document.getElementById('feedback-text');
+            const letterEarned = document.getElementById('letter-earned');
+            const letterValue = document.getElementById('letter-value');
+            
+            // Disable option buttons
+            document.querySelectorAll('.option-btn').forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.7';
+            });
+            
+            if (isCorrect) {
+                feedbackContainer.className = 'feedback correct';
+                feedbackText.textContent = `Correct! ${question.explanation}`;
+                letterEarned.style.display = 'block';
+                letterValue.textContent = question.letterReward;
+                collectedLetters.push(question.letterReward);
+                score++;
+                
+                // Update score display
+                document.getElementById('current-score').textContent = score;
+            } else {
+                feedbackContainer.className = 'feedback incorrect';
+                feedbackText.textContent = `Incorrect. ${question.explanation}`;
+                letterEarned.style.display = 'none';
+            }
+            
+            feedbackContainer.style.display = 'block';
+        }
+
+        function showPasswordEntry() {
+            gameArea.style.display = 'none';
+            passwordContainer.style.display = 'block';
+            
+            // Display collected letters
+            document.getElementById('collected-letters').textContent = collectedLetters.join(' ');
+            
+            // Reset password input and feedback
+            document.getElementById('password-input').value = '';
+            document.getElementById('password-feedback').style.display = 'none';
+        }
+
+        function showLevelComplete() {
+            const levelScore = document.querySelectorAll('.feedback.correct').length;
+            document.getElementById('level-score').textContent = `${levelScore}/4`;
+            document.getElementById('level-password').textContent = gameData.levels[currentLevel].password;
+            
+            levelCompleteScreen.style.display = 'block';
+        }
+
+        function showGameComplete() {
+            gameCompleteScreen.style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            
+            // Display rank based on score
+            const playerRank = document.getElementById('player-rank');
+            if (score >= 10) {
+                playerRank.textContent = 'Master Time Agent';
+            } else if (score >= 7) {
+                playerRank.textContent = 'Senior Time Agent';
+            } else if (score >= 4) {
+                playerRank.textContent = 'Time Agent';
+            } else {
+                playerRank.textContent = 'Time Agent Trainee';
+            }
+            
+            // Display all passwords
+            document.getElementById('past-password').textContent = levelPasswords[0] || 'Not completed';
+            document.getElementById('present-password').textContent = levelPasswords[1] || 'Not completed';
+            document.getElementById('future-password').textContent = levelPasswords[2] || 'Not completed';
+        }
+
+        function updateLevelBadge() {
+            const levelName = gameData.levels[currentLevel].name;
+            document.getElementById('current-level-badge').textContent = `Level ${currentLevel + 1}: ${levelName}`;
+        }
+    </script>
+</body>
+</html>
