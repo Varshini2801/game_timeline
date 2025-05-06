@@ -340,7 +340,7 @@
             <h1>⏳ TIME TRAVELERS' PHISHING DETECTION CHALLENGE ⏳</h1>
             <p>You're a specialized agent for the Temporal Security Agency. Your mission is to identify digital threats across different time periods to prevent timeline corruption.</p>
             <p>In each era, you'll assess communications to determine if they're legitimate or dangerous phishing attempts.</p>
-            <p>Collect letter fragments of secret passwords to open time portals and continue your journey.</p>
+            <p>Analyse every detail on screen with utmost focus to uncover the password and continue your journey.</p>
             <p><strong>Good luck, Agent. The timeline depends on your vigilance!</strong></p>
             <button class="btn" id="start-game">BEGIN MISSION</button>
         </div>
@@ -399,7 +399,6 @@
                 <h2>LEVEL 1: DIGITAL DAWN (1990s-2000s)</h2>
                 <p>You've arrived at the birth of the digital age. Early internet users were less aware of security threats.</p>
                 <p>Analyze these early communications and identify the threats.</p>
-                <p>Password hint: "The original sin of the internet"</p>
                 <div class="time-portal">⧗ Mission Active ⧗</div>
             </div>
             
@@ -522,7 +521,7 @@
         <div style="margin-top: 20px; font-size: 12px; color: #706f6f; text-align: center;">
             <p>© 2005 MySpace.com All rights reserved</p>
             <div class="hover-reveal-area" style="background-color: white;">
-                <div class="hover-text" style="color: black;">Secret letter: G</div>
+                <div class="hover-text" style="color: black;">Secret letter: G,A</div>
             </div>
         </div>
     </div>
@@ -538,6 +537,7 @@
             <div class="password-section" id="password-section-level1">
                 <h3>Time Portal Password</h3>
                 <p>Enter the password to proceed to the next time period:</p>
+                <p>You can remember me, but I cant return</p>
                 <div class="collected-letters" id="collected-letters-level1">_ _</div>
                 <div style="margin-top: 15px;">
                     <input type="text" class="password-input" id="password-input-level1" maxlength="4">
@@ -559,7 +559,6 @@
                 <h2>LEVEL 2: MODERN DECEPTION (2010s-2020s)</h2>
                 <p>Welcome to our current era. Phishing techniques have become more sophisticated, but so have security measures.</p>
                 <p>Analyze these contemporary communications for threats.</p>
-                <p>Password hint: "What you give to access what's free"</p>
                 <div class="time-portal">⧗ Mission Active ⧗</div>
             </div>
             
@@ -622,7 +621,7 @@
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
     &lt;title&gt;Netflix Account Verification&lt;/title&gt;
-    &lt;!-- Secret letter: R --&gt;
+    &lt;!-- Secret letter: R,P --&gt;
     &lt;style&gt;
         body { background-color: #000; color: #fff; font-family: Arial; }
         .logo { color: #e50914; font-size: 36px; }
@@ -823,6 +822,7 @@
             <div class="password-section" id="password-section-level2">
                 <h3>Time Portal Password</h3>
                 <p>Enter the password to proceed to the next time period:</p>
+                <p>A gift for now, but soon to pass</p>
                 <div class="collected-letters" id="collected-letters-level2">_ _ _</div>
                 <div style="margin-top: 15px;">
                     <input type="text" class="password-input" id="password-input-level2" maxlength="4">
@@ -844,7 +844,6 @@
                 <h2>LEVEL 3: FUTURE THREATS (2030s and beyond)</h2>
                 <p>You've traveled to the future where AI and quantum computing have revolutionized both security and threats.</p>
                 <p>Analyze these futuristic communications to identify advanced phishing attacks.</p>
-                <p>Password hint: "The universal currency of the digital age"</p>
                 <div class="time-portal">⧗ Mission Active ⧗</div>
             </div>
             
@@ -975,7 +974,7 @@
         <div style="position: relative; width: 200px; height: 80px; margin: 0 auto;">
             <!-- The hidden content is positioned absolutely UNDER the box -->
             <div class="hidden-content" id="hidden-content-q3-3" style="position: absolute; top: 0; left: 0; width: 100%; padding: 15px 0; color: #0ff; font-weight: bold; z-index: 1;">
-                Secret letter: N
+                Secret letter: N,T
             </div>
             <!-- The movable box is positioned above the content with higher z-index -->
             <div class="movable-box" id="movable-box-q3-3" style="background-color: #0aa; width: 100%; height: 50px; cursor: move; position: absolute; top: 0; left: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; z-index: 2;">
@@ -1122,6 +1121,7 @@
             <div class="password-section" id="password-section-level3">
                 <h3>Time Portal Password</h3>
                 <p>Enter the password to complete your mission:</p>
+                <p>You chase me, though I cant be near, Im always ahead, but never clear</p>
                 <div class="collected-letters" id="collected-letters-level3">_ _ _</div>
                 <div style="margin-top: 15px;">
                     <input type="text" class="password-input" id="password-input-level3" maxlength="4">
@@ -1273,19 +1273,16 @@
         
         // Update collected letters display
         function updateCollectedLetters(level) {
-            const letters = gameState.collectedLetters['level' + level];
-            let displayText = '';
-            
-            for (let i = 1; i <= 3; i++) {
-                if (letters[i]) {
-                    displayText += letters[i] + ' ';
-                } else {
-                    displayText += '_ ';
-                }
-            }
-            
-            document.getElementById('collected-letters-level' + level).textContent = displayText.trim();
-        }
+    const letters = gameState.collectedLetters['level' + level];
+    let displayText = '';
+    
+    for (let i = 1; i <= 3; i++) {
+        // Always show underscore regardless of whether letter is collected
+        displayText += '';
+    }
+    
+    document.getElementById('collected-letters-level' + level).textContent = displayText.trim();
+}
         
         // Move to next question
         function moveToNextQuestion(questionId) {
