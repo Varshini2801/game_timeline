@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -164,16 +164,27 @@
             padding: 20px;
         }
         
+        /* IMPORTANT: Updated close button styling for better desktop compatibility */
         .close-fake-site {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
+            position: fixed; /* Changed from absolute to fixed */
+            top: 20px; /* Increased from 10px */
+            right: 20px; /* Increased from 10px */
+            padding: 10px 15px; /* Increased padding for better visibility */
             background-color: #f44336;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px; /* Added font size */
+            font-weight: bold; /* Made text bold */
+            z-index: 101; /* Ensure it's above other elements */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Added shadow for visibility */
+        }
+        
+        /* Added hover effect for X button */
+        .close-fake-site:hover {
+            background-color: #d32f2f;
+            transform: scale(1.05);
         }
         
         .hidden-clue {
@@ -304,6 +315,23 @@
         .brightness-slider {
             width: 300px;
         }
+        
+        /* Added media query for 1920x1080 desktop screens */
+        @media screen and (min-width: 1600px) {
+            .container {
+                max-width: 1200px; /* Increased container width for larger screens */
+            }
+            
+            .question-image {
+                max-width: 900px; /* Larger images for desktop */
+            }
+            
+            /* Ensure the close button remains visible on larger screens */
+            .close-fake-site {
+                font-size: 18px;
+                padding: 12px 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -316,6 +344,54 @@
             <p><strong>Good luck, Agent. The timeline depends on your vigilance!</strong></p>
             <button class="btn" id="start-game">BEGIN MISSION</button>
         </div>
+        
+        <!-- Adding JavaScript to ensure the close button works properly -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Find all close buttons and ensure they're properly visible and functional
+                const closeButtons = document.querySelectorAll('.close-fake-site');
+                
+                closeButtons.forEach(button => {
+                    // Make sure the button is visible
+                    button.style.display = 'block';
+                    
+                    // Add click event listener
+                    button.addEventListener('click', function(e) {
+                        // Find the parent fake-site element
+                        const fakeSite = this.closest('.fake-site');
+                        if (fakeSite) {
+                            fakeSite.style.display = 'none';
+                            console.log('Fake site closed!');
+                            
+                            // This is where the secret key functionality would be triggered
+                            // Secret key found!
+                        }
+                        e.stopPropagation();
+                    });
+                });
+                
+                // Add resize event listener to ensure compatibility on window resize
+                window.addEventListener('resize', function() {
+                    const screenWidth = window.innerWidth;
+                    const screenHeight = window.innerHeight;
+                    
+                    // Adjust elements if needed based on screen size
+                    if (screenWidth >= 1920 && screenHeight >= 1080) {
+                        // Desktop-specific adjustments
+                        console.log('Desktop resolution detected: 1920x1080');
+                        
+                        // Ensure close buttons are still properly positioned
+                        closeButtons.forEach(button => {
+                            button.style.top = '20px';
+                            button.style.right = '20px';
+                        });
+                    }
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
         
         <!-- LEVEL 1: THE PAST (1990s-2000s) -->
         <div class="game-section past" id="level1">
@@ -677,7 +753,7 @@
     // Add functionality for the brightness slider
     document.getElementById('brightness-slider').addEventListener('input', function() {
         // Update the displayed brightness value
-        document.getElementById('brightness-value').textContent = Brightness: ${this.value};
+        document.getElementById('brightness-value').textContent = `Brightness: ${this.value}`;
         const value = parseInt(this.value);
         
         // Calculate visibility based on proximity to the "sweet spot"
@@ -730,7 +806,7 @@
         const b = Math.round(b2 + (b1 - b2) * factor);
         
         // Convert back to hex
-        return #${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')};
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
     }
     
     // Original functions
