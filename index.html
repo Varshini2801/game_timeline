@@ -3,674 +3,1346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Traveler's Security Challenge</title>
+    <title>Time Travelers' Phishing Detection Game</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #121212;
+            color: #f0f0f0;
             margin: 0;
             padding: 0;
-            color: #333;
-            transition: background-color 1s;
+            transition: all 0.5s;
         }
+        
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-top: 40px;
-            margin-bottom: 40px;
         }
-        h1 {
+        
+        h1, h2, h3 {
+            color: #4fc3f7;
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
         }
-        .intro, .level-intro, .question-container, .feedback, .password-container, .level-complete, .game-complete {
+        
+        .game-intro {
+            text-align: center;
             margin-bottom: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
             padding: 20px;
-            border-radius: 8px;
-            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
         }
-        .start-btn, .next-btn, .submit-btn, .submit-password-btn, .continue-btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 10px 0;
-            transition: background-color 0.3s;
+        
+        .game-section {
+            display: none;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s;
         }
-        .start-btn:hover, .next-btn:hover, .submit-btn:hover, .submit-password-btn:hover, .continue-btn:hover {
-            background-color: #2980b9;
-        }
-        .options {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-        .option-btn {
-            background-color: #f0f0f0;
-            border: 2px solid #ddd;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 48%;
-            transition: all 0.3s;
-        }
-        .option-btn:hover {
-            border-color: #3498db;
-        }
-        .image-container {
-            text-align: center;
-            margin: 20px 0;
-            border: 1px solid #ddd;
-            padding: 10px;
-            background-color: white;
-        }
-        .image-container img {
-            max-width: 100%;
-            height: auto;
+        
+        .game-section.active {
             display: block;
-            margin: 0 auto;
         }
-        .feedback {
-            font-weight: bold;
-            text-align: center;
-            padding: 15px;
-        }
-        .correct {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .incorrect {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .password-input {
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            width: calc(100% - 24px);
-            margin-bottom: 10px;
-        }
-        .password-hint {
-            background-color: #e8f4f8;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3498db;
-        }
-        .collected-letters {
-            font-size: 18px;
-            letter-spacing: 5px;
-            text-align: center;
-            margin: 15px 0;
-            font-weight: bold;
-        }
-        .progress-container {
-            width: 100%;
-            background-color: #ddd;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
-        .progress-bar {
-            height: 10px;
-            border-radius: 4px;
-            background-color: #3498db;
-            width: 0%;
-            transition: width 0.5s;
-        }
-        .timer {
-            text-align: center;
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        .level-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 20px;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        .era-indicator {
-            font-style: italic;
+        
+        .level-intro {
             text-align: center;
             margin-bottom: 20px;
-            color: #666;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
         }
-        .score-display {
+        
+        .question-container {
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(79, 195, 247, 0.2);
+        }
+        
+        .question-image {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            display: block;
+            border: 1px solid #555;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .phish-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-phish {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .btn-legit {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
             text-align: center;
+            display: none;
+        }
+        
+        .correct {
+            background-color: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: rgba(244, 67, 54, 0.3);
+            border: 1px solid #f44336;
+        }
+        
+        .collected-letters {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 24px;
+            letter-spacing: 5px;
+        }
+        
+        .password-section {
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .password-input {
+            padding: 10px;
             font-size: 18px;
+            text-align: center;
+            letter-spacing: 5px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        .level-complete {
+            text-align: center;
+            margin: 30px 0;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        
+        .fake-site {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 100;
+            overflow: auto;
+            padding: 20px;
+        }
+        
+        .close-fake-site {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .hidden-clue {
+            color: transparent;
+            user-select: none;
+        }
+        
+        .brightness-sensitive {
+            position: relative;
+        }
+        
+        .hidden-bright-text {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .hover-reveal-area {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            background-color: #333;
+            margin: 0 auto;
+        }
+        
+        .hover-text {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 60px;
+            background-color: #444;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .hover-reveal-area:hover .hover-text {
+            display: block;
+        }
+        
+        /* Time period styling */
+        .past {
+            background-color: #3e2723;
+            background-image: url('/api/placeholder/800/200');
+            background-blend-mode: overlay;
+            background-size: cover;
+        }
+        
+        .present {
+            background-color: #263238;
+            background-image: url('/api/placeholder/800/200');
+            background-blend-mode: overlay;
+            background-size: cover;
+        }
+        
+        .future {
+            background-color: #1a237e;
+            background-image: url('/api/placeholder/800/200');
+            background-blend-mode: overlay;
+            background-size: cover;
+        }
+        
+        .game-complete {
+            display: none;
+            text-align: center;
+            margin-top: 50px;
+            animation: confetti 1s infinite;
+        }
+        
+        .score-display {
+            font-size: 28px;
             margin: 20px 0;
         }
-        .placeholder-image {
-            background-color: #eee;
-            height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #777;
+        
+        .play-again {
+            padding: 15px 30px;
+            background-color: #4fc3f7;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
             font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-
-        /* Era-specific styling */
-        .past-era {
-            background-color: #f0e6d2;
+        
+        .play-again:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(79, 195, 247, 0.5);
         }
-        .present-era {
-            background-color: #e6f0f0;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .future-era {
-            background-color: #e6e6f0;
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
-
-        /* Responsive design */
-        @media (max-width: 600px) {
-            .container {
-                margin: 10px;
-                padding: 15px;
-            }
-            .options {
-                flex-direction: column;
-            }
-            .option-btn {
-                width: 100%;
-                margin-bottom: 10px;
-            }
+        
+        @keyframes confetti {
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); }
+            50% { text-shadow: 0 0 20px rgba(79, 195, 247, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); }
+        }
+        
+        .time-portal {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+            animation: glow 2s infinite;
+        }
+        
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px #4fc3f7; }
+            50% { text-shadow: 0 0 20px #4fc3f7, 0 0 30px #4fc3f7; }
+            100% { text-shadow: 0 0 5px #4fc3f7; }
+        }
+        
+        .brightness-control {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .brightness-slider {
+            width: 300px;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="game-container">
-        <!-- Game intro screen -->
-        <div id="intro-screen">
-            <h1>Time Traveler's Security Challenge</h1>
-            <div class="intro">
-                <p>Welcome, Time Agent! A temporal anomaly has fractured our timeline, and phishing scams from all eras are leaking through!</p>
-                <p>Your mission: identify phishing attempts across three time periods to collect the fragments of a temporal access code. Only by completing all three levels will you restore the timeline.</p>
-                <p><strong>How to play:</strong></p>
-                <ul>
-                    <li>Each level features phishing examples from a different time period</li>
-                    <li>Examine each example carefully and determine if it's "Phish" or "Legit"</li>
-                    <li>Each correct answer earns you a letter of the temporal access code</li>
-                    <li>After completing all questions in a level, use the collected letters to form the password</li>
-                    <li>Enter the correct password to proceed to the next era</li>
-                </ul>
-                <p><strong>Remember:</strong> Look for suspicious URLs, poor grammar, urgent requests, generic greetings, and unsecured connections!</p>
-                <button id="start-game" class="start-btn">Begin Mission</button>
-            </div>
+    <div class="container">
+        <div class="game-intro active" id="game-intro">
+            <h1>⏳ TIME TRAVELERS' PHISHING DETECTION CHALLENGE ⏳</h1>
+            <p>You're a specialized agent for the Temporal Security Agency. Your mission is to identify digital threats across different time periods to prevent timeline corruption.</p>
+            <p>In each era, you'll assess communications to determine if they're legitimate or dangerous phishing attempts.</p>
+            <p>Collect letter fragments of secret passwords to open time portals and continue your journey.</p>
+            <p><strong>Good luck, Agent. The timeline depends on your vigilance!</strong></p>
+            <button class="btn" id="start-game">BEGIN MISSION</button>
         </div>
-
-        <!-- Level intro screens -->
-        <div id="level-1-intro" class="level-intro past-era" style="display: none;">
-            <h1>Level 1: The Past (1990s-2000s)</h1>
-            <div class="era-indicator">Welcome to the early days of the internet...</div>
-            <p>You've traveled back to the dawn of the digital age where phishing was just beginning. These attacks are more primitive but can still be dangerous!</p>
-            <p>Look for obvious spelling errors, basic forgeries, and crude imitations of early web design.</p>
-            <p>Complete 4 challenges to collect the temporal access code for this era.</p>
-            <button id="start-level-1" class="start-btn">Enter The Past</button>
-        </div>
-
-        <div id="level-2-intro" class="level-intro present-era" style="display: none;">
-            <h1>Level 2: The Present (2020s)</h1>
-            <div class="era-indicator">Welcome to modern-day digital threats...</div>
-            <p>You've arrived in our current time where phishing attacks have become more sophisticated and targeted.</p>
-            <p>Watch for lookalike domains, social engineering tactics, and security indicators like HTTPS.</p>
-            <p>Complete 4 challenges to collect the temporal access code for this era.</p>
-            <button id="start-level-2" class="start-btn">Enter The Present</button>
-        </div>
-
-        <div id="level-3-intro" class="level-intro future-era" style="display: none;">
-            <h1>Level 3: The Future (2040s)</h1>
-            <div class="era-indicator">Welcome to tomorrow's threats...</div>
-            <p>You've jumped forward to a time where AI and advanced technology have transformed both security and threats.</p>
-            <p>Look for deepfake detection clues, quantum encryption markers, and biometric verification gaps.</p>
-            <p>Complete 4 challenges to collect the final temporal access code.</p>
-            <button id="start-level-3" class="start-btn">Enter The Future</button>
-        </div>
-
-        <!-- Game area -->
-        <div id="game-area" style="display: none;">
-            <div class="level-badge" id="current-level-badge">Level 1: The Past</div>
-            <div class="progress-container">
-                <div class="progress-bar" id="level-progress"></div>
+        
+        <!-- LEVEL 1: THE PAST (1990s-2000s) -->
+        <div class="game-section past" id="level1">
+            <div class="level-intro">
+                <h2>LEVEL 1: DIGITAL DAWN (1990s-2000s)</h2>
+                <p>You've arrived at the birth of the digital age. Early internet users were less aware of security threats.</p>
+                <p>Analyze these early communications and identify the threats.</p>
+                <p>Password hint: "The original sin of the internet"</p>
+                <div class="time-portal">⧗ Mission Active ⧗</div>
             </div>
             
-            <div class="score-display">
-                Score: <span id="current-score">0</span>/<span id="total-questions">12</span>
-            </div>
-            
-            <div class="question-container" id="question-container">
-                <h2 id="question-title">Question 1</h2>
-                <p id="question-description">Is this email legitimate or a phishing attempt?</p>
-                
-                <div class="image-container" id="question-image">
-                    <!-- Placeholder for question image -->
+            <!-- Question 1.1 -->
+            <div class="question-container active" id="q1-1">
+                <h3>Assessment 1.1</h3>
+                <img src="./paypal phish 1.3.jpg" alt="Early PayPal phishing email" class="question-image">
+                <p>Paypal Email</p>
+                <div class="phish-container">
+                    <button class="btn btn-phish" onclick="checkAnswer('q1-1', 'phish')">PHISHING</button>
+                    <button class="btn btn-legit" onclick="checkAnswer('q1-1', 'legit')">LEGITIMATE</button>
                 </div>
-                
-                <div class="options">
-                    <button class="option-btn" data-option="phish">Phishing Attempt</button>
-                    <button class="option-btn" data-option="legit">Legitimate</button>
+                <div class="feedback" id="feedback-q1-1"></div>
+            </div>
+            
+            <!-- Fake Site for Question 1.1 -->
+            <div class="fake-site" id="fake-site-q1-1">
+                <button class="close-fake-site" onclick="closeFakeSite('q1-1')">X</button>
+                <div style="background-color: #f0f0f0; color: #000; padding: 20px; font-family: Arial;">
+                    <div style="text-align: center; padding: 10px;">
+                        <h2 style="color: #1546a0;">PayPal Security Center</h2>
+                    </div>
+                    <div style="background-color: white; padding: 20px; border: 1px solid #ddd;">
+                        <h3>Confirm Your Account Information</h3>
+                        <p>Dear valued customer,</p>
+                        <p>We have detected unusual activities on your PayPal acount. To secure your account, please verify your infomation immediately.</p>
+                        <form style="margin-top: 20px;">
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px;">Email Address:</label>
+                                <input type="email" style="width: 100%; padding: 8px; border: 1px solid #ccc;">
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px;">Password:</label>
+                                <input type="password" style="width: 100%; padding: 8px; border: 1px solid #ccc;">
+                            </div>
+                            <button type="button" style="background-color: #1546a0; color: white; padding: 10px 15px; border: none; cursor: pointer;">Verify Now</button>
+                        </form>
+                        <div class="brightness-sensitive">
+                            <p style="margin-top: 50px; font-size: 12px; color: #999;">© 2003 PayPal Inc. All rights reserved.</p>
+                            <span class="hidden-bright-text">Secret letter: O</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="brightness-control">
+                    <p>SUBMIT</p>
+                    <input type="range" min="0" max="100" value="10" class="brightness-slider" id="brightness-slider-q1-1" oninput="adjustBrightness(this.value, 'q1-1')">
                 </div>
             </div>
             
-            <div class="feedback" id="feedback-container" style="display: none;">
-                <p id="feedback-text"></p>
-                <p id="letter-earned" style="display: none;">You earned the letter: <strong><span id="letter-value"></span></strong></p>
-                <button class="next-btn" id="next-question">Next Question</button>
+            <!-- Question 1.2 -->
+            <div class="question-container" id="q1-2">
+                <h3>Assessment 1.2</h3>
+                <img src="./amazon legit 2.2.jpg" alt="Early Amazon email" class="question-image">
+                <p>Amazon Email</p>
+                <div class="phish-container">
+                    <button class="btn btn-phish" onclick="checkAnswer('q1-2', 'phish')">PHISHING</button>
+                    <button class="btn btn-legit" onclick="checkAnswer('q1-2', 'legit')">LEGITIMATE</button>
+                </div>
+                <div class="feedback" id="feedback-q1-2"></div>
+            </div>
+            
+           <!-- Question 1.3 -->
+<div class="question-container" id="q1-3">
+    <h3>Assessment 1.3</h3>
+    <img src="./MySpace phish 4.1.jpg" alt="MySpace friend request phishing" class="question-image">
+    <p>MySpace Email</p>
+    <div class="phish-container">
+        <button class="btn btn-phish" onclick="checkAnswer('q1-3', 'phish')">PHISHING</button>
+        <button class="btn btn-legit" onclick="checkAnswer('q1-3', 'legit')">LEGITIMATE</button>
+    </div>
+    <div class="feedback" id="feedback-q1-3"></div>
+</div>
+
+<!-- Fake Site for Question 1.3 -->
+<div class="fake-site" id="fake-site-q1-3">
+    <button class="close-fake-site" onclick="closeFakeSite('q1-3')">X</button>
+    <div style="background-color: #e8eaf6; color: #000; padding: 20px; font-family: 'Arial';">
+        <div style="text-align: center; padding: 10px; background-color: #3f51b5; color: white;">
+            <h2>MySpace</h2>
+        </div>
+        <div style="background-color: white; padding: 20px; border: 1px solid #ddd;">
+            <h3>New Friend Request</h3>
+            <div style="display: flex; align-items: center; margin: 20px 0;">
+                <div style="width: 100px; height: 100px; background-color: #ddd; margin-right: 20px;">
+                    <img src="/api/placeholder/100/100" alt="Profile picture" style="width: 100%;">
+                </div>
+                <div>
+                    <h4>Jessica Thompson wants to be your friend</h4>
+                    <p>Jessica has 342 friends in common with you</p>
+                    <div style="margin-top: 15px;">
+                        <button style="background-color: #3f51b5; color: white; border: none; padding: 8px 15px; margin-right: 10px; cursor: pointer;">Accept</button>
+                        <button style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 8px 15px; cursor: pointer;">Decline</button>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                <h4>Discover more friends</h4>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <div style="width: 80px; margin: 10px; text-align: center;">
+                        <div style="width: 60px; height: 60px; background-color: #ddd; margin: 0 auto;">
+                            <img src="/api/placeholder/60/60" alt="Friend suggestion">
+                        </div>
+                        <p style="font-size: 12px; margin-top: 5px;">Chris M.</p>
+                    </div>
+                    <div style="width: 80px; margin: 10px; text-align: center;">
+                        <div style="width: 60px; height: 60px; background-color: #ddd; margin: 0 auto;">
+                            <img src="/api/placeholder/60/60" alt="Friend suggestion">
+                        </div>
+                        <p style="font-size: 12px; margin-top: 5px;">Sarah L.</p>
+                    </div>
+                    <div style="width: 80px; margin: 10px; text-align: center;">
+                        <div style="width: 60px; height: 60px; background-color: #ddd; margin: 0 auto;">
+                            <img src="/api/placeholder/60/60" alt="Friend suggestion">
+                        </div>
+                        <p style="font-size: 12px; margin-top: 5px;">Mike T.</p>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Password entry screen -->
-        <div id="password-container" class="password-container" style="display: none;">
-            <h2>Enter the Temporal Access Code</h2>
-            <div class="password-hint">
-                <p>You've collected these letters: <span id="collected-letters" class="collected-letters"></span></p>
-                <p>Unscramble the letters to form the correct password for this era.</p>
+        <div style="margin-top: 20px; font-size: 12px; color: #706f6f; text-align: center;">
+            <p>© 2005 MySpace.com All rights reserved</p>
+            <div class="hover-reveal-area" style="background-color: white;">
+                <div class="hover-text" style="color: black;">Secret letter: G</div>
             </div>
-            <input type="text" id="password-input" class="password-input" placeholder="Enter the access code...">
-            <button class="submit-password-btn" id="submit-password">Submit Access Code</button>
-            <p id="password-feedback" style="color: red; display: none;">Incorrect access code. Try again!</p>
-        </div>
-
-        <!-- Level complete screens -->
-        <div id="level-complete" class="level-complete" style="display: none;">
-            <h2>Level Complete!</h2>
-            <p>You've successfully secured this time period and collected the temporal access code: <strong><span id="level-password"></span></strong></p>
-            <p>Level score: <span id="level-score">0</span>/4</p>
-            <button class="continue-btn" id="continue-next-level">Continue to Next Era</button>
-        </div>
-
-        <!-- Game complete screen -->
-        <div id="game-complete" class="game-complete" style="display: none;">
-            <h1>Timeline Restored!</h1>
-            <p>Congratulations, Time Agent! You've successfully identified phishing threats across all three time periods and restored the integrity of our timeline.</p>
-            <div class="score-display">
-                <p>Final Score: <span id="final-score">0</span>/12</p>
-                <p>Time Agent Rank: <span id="player-rank">Novice</span></p>
-            </div>
-            <p>The three temporal access codes you discovered were:</p>
-            <ul>
-                <li>Past Era: <strong><span id="past-password"></span></strong></li>
-                <li>Present Era: <strong><span id="present-password"></span></strong></li>
-                <li>Future Era: <strong><span id="future-password"></span></strong></li>
-            </ul>
-            <p>Thank you for protecting our digital timeline!</p>
-            <button class="start-btn" id="restart-game">Play Again</button>
         </div>
     </div>
+</div>
 
-    <script>
-        // Game data
-        const gameData = {
-            levels: [
-                {
-                    name: "The Past (1990s-2000s)",
-                    class: "past-era",
-                    password: "MYTH",
-                    questions: [
-                        {
-                            title: "AOL Email (1998)",
-                            description: "You've received this email from AOL. Is it genuine or phishing?",
-                            image: "./aol phish 1.1.jpg",
-                            imageDesc: "AOL email",
-                            correctAnswer: "phish",
-                            explanation: "This is a phishing attempt. Red flags include: spelling errors, generic greeting ('Dear User'), suspicious URL ('aol-security.net' rather than aol.com), and creating urgency.",
-                            letterReward: "H"
-                        },
-                        {
-                            title: "eBay Listing (2002)",
-                            description: "You're looking at this eBay product listing. Is it legitimate?",
-                            image: "./ebay legit 1.2.jpg",
-                            imageDesc: "Ebay email",
-                            correctAnswer: "legit",
-                            explanation: "This appears to be legitimate. It has proper eBay branding from that era, uses HTTPS, has a consistent design with early 2000s eBay, and displays normal pricing.",
-                            letterReward: "Y"
-                        },
-                        {
-                            title: "PayPal Email (2003)",
-                            description: "You've received this payment confirmation from PayPal. Is it legitimate?",
-                            image: "./paypal phish 1.3.jpg",
-                            imageDesc: "PayPal email",
-                            correctAnswer: "phish",
-                            explanation: "This is a phishing attempt. The logo colors are slightly off, it addresses you generically as 'Valued Customer' rather than by name, and the sender email (paypal_secure@mail-paypal.net) is suspicious.",
-                            letterReward: "M"
-                        },
-                        {
-                            title: "Yahoo Login Page (2001)",
-                            description: "You've clicked a link and arrived at this Yahoo login page. Is it safe?",
-                            image: "./yahoo phish 1.4.jpg",
-                            imageDesc: "Yahoo email",
-                            correctAnswer: "phish",
-                            explanation: "This is a phishing attempt. The URL shows 'yah00.com' (with zeros instead of 'o's). While the design looks accurate for the period, there are alignment issues and the logo is pixelated.",
-                            letterReward: "T"
-                        }
-                    ]
-                },
-                {
-                    name: "The Present (2020s)",
-                    class: "present-era",
-                    password: "LIVE",
-                    questions: [
-                        {
-                            title: "Netflix Account Update (2023)",
-                            description: "You received this email from Netflix about payment issues. Is it genuine?",
-                            image: "./netflix phish 2.1.jpg",
-                            imageDesc: "Netflix email",
-                            correctAnswer: "phish",
-                            explanation: "This is a phishing attempt. While the branding looks good, the sender email is suspicious (netfl1x-billing@accounts-update.net), and there's an urgent message threatening account suspension with a generic 'Click Here' button.",
-                            letterReward: "E"
-                        },
-                        {
-                            title: "Amazon Order Confirmation (2024)",
-                            description: "You received this order confirmation from Amazon. Is it legitimate?",
-                            image: "./amazon legit 2.2.jpg",
-                            imageDesc: "Amazon email",
-                            correctAnswer: "legit",
-                            explanation: "This appears legitimate. It has correct Amazon branding, addresses you by name, includes proper order details matching items you ordered, and comes from a genuine amazon.com sender address.",
-                            letterReward: "I"
-                        },
-                        {
-                            title: "Microsoft Teams Notification (2024)",
-                            description: "You received this Microsoft Teams notification about a shared file. Is it safe?",
-                            image: "./microsoft phish 2.3.jpg",
-                            imageDesc: "Microsoft email",
-                            correctAnswer: "phish",
-                            explanation: "This is a phishing attempt. While the branding looks accurate, the link points to 'teams-fileshare.net' (not microsoft.com), uses urgent language ('Sign in immediately'), and has a generic greeting.",
-                            letterReward: "L"
-                        },
-                        {
-                            title: "Apple Sign-In Page (2023)",
-                            description: "You're looking at this Apple ID sign-in page. Is it genuine?",
-                            image: "./apple legit 2.4.jpg",
-                            imageDesc: "Apple email",
-                            correctAnswer: "legit",
-                            explanation: "This appears to be legitimate. It has correct Apple branding, uses HTTPS, displays the proper apple.com domain, and features standard Apple design elements without any inconsistencies.",
-                            letterReward: "V"
-                        }
-                    ]
-                },
-                {
-                    name: "The Future (2040s)",
-                    class: "future-era",
-                    password: "NOVA",
-                    questions: [
-                        {
-                            title: "NeuroLink Biometric Sync (2042)",
-                            description: "Your NeuroLink implant received this synchronization request. Is it legitimate?",
-                            image: "./Quantum phish 3.1.jpg",
-                            imageDesc: "Nova email",
-                            correctAnswer: "phish",
-                            explanation: "This is a phishing attempt. The quantum verification seal is missing, the neural interface icon is asymmetrical (authentic ones are perfectly symmetrical), and it's requesting unusual access permissions that legitimate syncs don't require.",
-                            letterReward: "O"
-                        },
-                        {
-                            title: "Global Digital ID Verification (2045)",
-                            description: "You're looking at this Global Digital ID verification screen. Is it genuine?",
-                            image: "./global legit 3.2.jpg",
-                            imageDesc: "Global Digital email",
-                            correctAnswer: "legit",
-                            explanation: "This appears legitimate. It displays proper quantum encryption markers in the corner, has the correct holographic elements, shows standard permission requests, and the timestamp synchronization is valid.",
-                            letterReward: "A"
-                        },
-                        {
-                            title: "Orbital Bank Transfer (2043)",
-                            description: "You've received this orbital banking transfer notification. Is it safe?",
-                            image: "./orbital bank phish 3.3.jpg",
-                            imageDesc: "Orbital Bank email",
-                            correctAnswer: "phish",
-                            explanation: "This is a phishing attempt. The neural synchronization patterns are irregular (authentic ones have precise patterns), it's requesting excessive biometric access, and the quantum address for the transfer is suspicious.",
-                            letterReward: "N"
-                        },
-                        {
-                            title: "AI Assistant Update (2044)",
-                            description: "Your AI assistant is requesting this critical update. Is it genuine?",
-                            image: "./ai legit 3.4.jpg",
-                            imageDesc: "AI Assistant email",
-                            correctAnswer: "legit",
-                            explanation: "This appears legitimate. It contains a valid cryptographic signature, shows proper neural interface patterns, follows standard security protocols, and includes registered quantum verification.",
-                            letterReward: "V"
-                        }
-                    ]
-                }
-            ]
-        };
-
-        // Game state
-        let currentLevel = 0;
-        let currentQuestion = 0;
-        let score = 0;
-        let collectedLetters = [];
-        let levelPasswords = [];
-
-        // DOM elements
-        const introScreen = document.getElementById('intro-screen');
-        const gameArea = document.getElementById('game-area');
-        const passwordContainer = document.getElementById('password-container');
-        const levelCompleteScreen = document.getElementById('level-complete');
-        const gameCompleteScreen = document.getElementById('game-complete');
-        const level1Intro = document.getElementById('level-1-intro');
-        const level2Intro = document.getElementById('level-2-intro');
-        const level3Intro = document.getElementById('level-3-intro');
-
-        // Button handlers
-        document.getElementById('start-game').addEventListener('click', () => {
-            introScreen.style.display = 'none';
-            level1Intro.style.display = 'block';
-            document.body.className = 'past-era';
-        });
-
-        document.getElementById('start-level-1').addEventListener('click', () => {
-            level1Intro.style.display = 'none';
-            startLevel(0);
-        });
-
-        document.getElementById('start-level-2').addEventListener('click', () => {
-            level2Intro.style.display = 'none';
-            startLevel(1);
-        });
-
-        document.getElementById('start-level-3').addEventListener('click', () => {
-            level3Intro.style.display = 'none';
-            startLevel(2);
-        });
-
-        document.getElementById('next-question').addEventListener('click', () => {
-            document.getElementById('feedback-container').style.display = 'none';
-            currentQuestion++;
+<style>
+.hover-reveal-area:hover .hover-text {
+    color: white;
+}
+</style>
             
-            const currentLevelData = gameData.levels[currentLevel];
-            if (currentQuestion < currentLevelData.questions.length) {
-                displayQuestion();
-            } else {
-                showPasswordEntry();
-            }
-        });
-
-        document.getElementById('submit-password').addEventListener('click', () => {
-            const userPassword = document.getElementById('password-input').value.toUpperCase();
-            const correctPassword = gameData.levels[currentLevel].password;
+            <!-- Password Section Level 1 -->
+            <div class="password-section" id="password-section-level1">
+                <h3>Time Portal Password</h3>
+                <p>Enter the password to proceed to the next time period:</p>
+                <div class="collected-letters" id="collected-letters-level1">_ _</div>
+                <div style="margin-top: 15px;">
+                    <input type="text" class="password-input" id="password-input-level1" maxlength="4">
+                    <button class="btn" onclick="checkPassword(1)">CONFIRM</button>
+                </div>
+                <div class="feedback" id="password-feedback-level1"></div>
+            </div>
             
-            if (userPassword === correctPassword) {
-                levelPasswords.push(correctPassword);
-                passwordContainer.style.display = 'none';
-                showLevelComplete();
-            } else {
-                document.getElementById('password-feedback').style.display = 'block';
-            }
-        });
-
-        document.getElementById('continue-next-level').addEventListener('click', () => {
-            levelCompleteScreen.style.display = 'none';
-            currentLevel++;
+            <div class="level-complete" id="level1-complete">
+                <h2>Time Portal Opening!</h2>
+                <p>You've successfully secured the Digital Dawn era.</p>
+                <button class="btn" onclick="startLevel(2)">ENTER NEXT TIME PERIOD</button>
+            </div>
+        </div>
+        
+        <!-- LEVEL 2: THE PRESENT (2010s-2020s) -->
+        <div class="game-section present" id="level2">
+            <div class="level-intro">
+                <h2>LEVEL 2: MODERN DECEPTION (2010s-2020s)</h2>
+                <p>Welcome to our current era. Phishing techniques have become more sophisticated, but so have security measures.</p>
+                <p>Analyze these contemporary communications for threats.</p>
+                <p>Password hint: "What you give to access what's free"</p>
+                <div class="time-portal">⧗ Mission Active ⧗</div>
+            </div>
             
-            if (currentLevel < gameData.levels.length) {
-                currentQuestion = 0;
-                collectedLetters = [];
+            <!-- Question 2.1 -->
+            <div class="question-container active" id="q2-1">
+                <h3>Assessment 2.1</h3>
+                <img src="./netflix phish 2.1.jpg" alt="Netflix account verification" class="question-image">
+                <p>Netflix Email</p>
+                <div class="phish-container">
+                    <button class="btn btn-phish" onclick="checkAnswer('q2-1', 'phish')">PHISHING</button>
+                    <button class="btn btn-legit" onclick="checkAnswer('q2-1', 'legit')">LEGITIMATE</button>
+                </div>
+                <div class="feedback" id="feedback-q2-1"></div>
+            </div>
+            
+            <!-- Fake Site for Question 2.1 -->
+            <div class="fake-site" id="fake-site-q2-1">
+                <button class="close-fake-site" onclick="closeFakeSite('q2-1')">X</button>
+                <div style="background-color: #000; color: #fff; padding: 20px; font-family: 'Arial';">
+                    <div style="text-align: center; padding: 10px;">
+                        <h2 style="color: #e50914; font-size: 36px;">NETFLIX</h2>
+                    </div>
+                    <div style="background-color: #141414; padding: 20px; border-radius: 5px;">
+                        <h3 style="color: #fff;">Account Verification Required</h3>
+                        <p>Your Netflix membership has been temporarily suspended due to a billing issue.</p>
+                        <p>Please update your payment information to continue enjoying uninterrupted streaming.</p>
+                        <form style="margin-top: 20px;">
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; color: #999;">Email Address:</label>
+                                <input type="email" style="width: 100%; padding: 12px; background-color: #333; border: none; color: #fff; border-radius: 4px;">
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; color: #999;">Password:</label>
+                                <input type="password" style="width: 100%; padding: 12px; background-color: #333; border: none; color: #fff; border-radius: 4px;">
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; color: #999;">Credit Card Number:</label>
+                                <input type="text" style="width: 100%; padding: 12px; background-color: #333; border: none; color: #fff; border-radius: 4px;">
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; color: #999;">Expiration Date:</label>
+                                <input type="text" style="width: 100%; padding: 12px; background-color: #333; border: none; color: #fff; border-radius: 4px;" placeholder="MM/YY">
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; color: #999;">CVV:</label>
+                                <input type="text" style="width: 100%; padding: 12px; background-color: #333; border: none; color: #fff; border-radius: 4px;">
+                            </div>
+                            <button type="button" style="background-color: #e50914; color: white; padding: 14px; border: none; width: 100%; border-radius: 4px; font-size: 16px; cursor: pointer;">VERIFY & CONTINUE</button>
+                        </form>
+                        <p style="margin-top: 20px; font-size: 12px; color: #999; text-align: center;">© 2023 Netflix Inc.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">
+                    <p>View page source to find the hidden clue</p>
+                    <button class="btn" onclick="document.getElementById('source-code-q2-1').style.display = 'block'">View Source</button>
+                    <div id="source-code-q2-1" style="display: none; text-align: left; background-color: #f5f5f5; padding: 20px; margin-top: 20px; color: #333; overflow: auto; max-height: 300px;">
+                        <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Netflix Account Verification&lt;/title&gt;
+    &lt;!-- Secret letter: R --&gt;
+    &lt;style&gt;
+        body { background-color: #000; color: #fff; font-family: Arial; }
+        .logo { color: #e50914; font-size: 36px; }
+        /* More styles... */
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Main content here --&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                        </pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 2.2 -->
+            <div class="question-container" id="q2-2">
+                <h3>Assessment 2.2</h3>
+                <img src="./Google Legit 4.2.jpg" alt="Google login page" class="question-image">
+                <p>Google Email</p>
+                <div class="phish-container">
+                    <button class="btn btn-phish" onclick="checkAnswer('q2-2', 'phish')">PHISHING</button>
+                    <button class="btn btn-legit" onclick="checkAnswer('q2-2', 'legit')">LEGITIMATE</button>
+                </div>
+                <div class="feedback" id="feedback-q2-2"></div>
+            </div>
+            
+           <!-- Question 2.3 -->
+<div class="question-container" id="q2-3">
+    <h3>Assessment 2.3</h3>
+    <img src="./Government Phish 4.3.jpg" alt="COVID-19 relief payment" class="question-image">
+    <p>Government Relief Email</p>
+    <div class="phish-container">
+        <button class="btn btn-phish" onclick="checkAnswer('q2-3', 'phish')">PHISHING</button>
+        <button class="btn btn-legit" onclick="checkAnswer('q2-3', 'legit')">LEGITIMATE</button>
+    </div>
+    <div class="feedback" id="feedback-q2-3"></div>
+</div>
+
+<!-- Fake Site for Question 2.3 -->
+<div class="fake-site" id="fake-site-q2-3">
+    <button class="close-fake-site" onclick="closeFakeSite('q2-3')">X</button>
+    <div style="background-color: #f9f9f9; color: #333; padding: 20px; font-family: 'Arial';">
+        <div style="text-align: center; padding: 10px; background-color: #1a478a; color: white;">
+            <h2>Government Relief Fund</h2>
+            <p>COVID-19 Financial Assistance Program</p>
+        </div>
+        <div style="background-color: white; padding: 20px; border: 1px solid #ddd; margin-top: 20px;">
+            <h3>Claim Your Relief Payment</h3>
+            <p>Due to the ongoing pandemic, eligible citizens can receive a one-time payment of $1,450.</p>
+            <p>Please complete the form below to receive your payment within 5-7 business days.</p>
+            
+            <form style="margin-top: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Full Name:</label>
+                    <input type="text" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Social Security Number:</label>
+                    <input type="text" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Date of Birth:</label>
+                    <input type="text" style="width: 100%; padding: 10px; border: 1px solid #ddd;" placeholder="MM/DD/YYYY">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Bank Account Number:</label>
+                    <input type="text" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Routing Number:</label>
+                    <input type="text" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                </div>
+                <button type="button" style="background-color: #1a478a; color: white; padding: 12px 20px; border: none; cursor: pointer; width: 100%;">Submit Claim</button>
+            </form>
+            
+            <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px;">
+                <p>For questions about your eligibility, please call our hotline at 1-888-555-0123.</p>
+                <p>This program expires in 24 hours. Act now to claim your payment.</p>
+            </div>
+        </div>
+    </div>
+    <div style="position: relative; text-align: center; margin-top: 20px;">
+        <p>Find the exact brightness level that reveals the hidden message</p>
+        <input type="range" min="0" max="100" value="50" id="brightness-slider" style="width: 80%; margin: 20px auto; display: block;">
+        <div id="brightness-value" style="text-align: center; font-size: 14px; color: #666;">Brightness: 50</div>
+        <div id="hidden-message-container" style="position: relative; width: 80%; height: 100px; margin: 0 auto; background-color: #f0f0f0; border-radius: 5px; overflow: hidden;">
+            <!-- The hidden message with very low contrast -->
+            <div id="hidden-message" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #f0f0f0; text-shadow: 1px 1px 1px rgba(0,0,0,0.1); user-select: none; font-weight: bold;">
                 
-                // Show appropriate level intro
-                if (currentLevel === 1) {
-                    level2Intro.style.display = 'block';
-                    document.body.className = 'present-era';
-                } else if (currentLevel === 2) {
-                    level3Intro.style.display = 'block';
-                    document.body.className = 'future-era';
-                }
-            } else {
-                showGameComplete();
+            </div>
+        </div>
+        
+        <!-- Replace the invisible clickable area with a brightness-dependent message -->
+        <div id="hidden-clue-q2-3" style="background-color: #fff; padding: 15px; border: 1px solid #ddd; margin-top: 20px;">
+            <p>Secret letter: <span id="secret-letter" style="color: #fefefe;">S</span></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Add styling for the brightness effect */
+    #brightness-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #1a478a;
+        cursor: pointer;
+    }
+    
+    #brightness-slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #1a478a;
+        cursor: pointer;
+    }
+    
+    /* Style for the hidden message container */
+    #hidden-message-container {
+        transition: background-color 0.3s ease;
+    }
+</style>
+
+<script>
+    // Add functionality for the brightness slider
+    document.getElementById('brightness-slider').addEventListener('input', function() {
+        // Update the displayed brightness value
+        document.getElementById('brightness-value').textContent = Brightness: ${this.value};
+        const value = parseInt(this.value);
+        
+        // Calculate visibility based on proximity to the "sweet spot"
+        const sweetSpot = 42; // The specific brightness level where text is visible
+        const visibilityRange = 5; // How close to the sweet spot you need to be
+        
+        // Calculate distance from sweet spot (0 = perfect match, higher = further away)
+        const distance = Math.abs(value - sweetSpot);
+        
+        // Calculate visibility factor (1 = fully visible, 0 = invisible)
+        const visibilityFactor = distance <= visibilityRange ? 
+            1 - (distance / visibilityRange) : 0;
+        
+        // Apply visibility to text elements
+        applyVisibility(visibilityFactor);
+    });
+    
+    // Function to apply visibility to hidden elements
+    function applyVisibility(factor) {
+        // Set text colors based on visibility factor
+        // Background is always light gray
+        const bgColor = "#f0f0f0";
+        
+        // Text color approaches background color as factor decreases
+        // When factor = 1, text is black (#000000)
+        // When factor = 0, text matches background (#f0f0f0)
+        const textColor = calculateBlendedColor("#000000", bgColor, factor);
+        const letterColor = calculateBlendedColor("#ff0000", "#fefefe", factor);
+        
+        // Update the elements
+        document.getElementById('hidden-message').style.color = textColor;
+        document.getElementById('hidden-message-container').style.backgroundColor = bgColor;
+        document.getElementById('secret-letter').style.color = letterColor;
+    }
+    
+    // Helper function to blend between two colors
+    function calculateBlendedColor(visibleColor, invisibleColor, factor) {
+        // Parse the hex colors
+        const r1 = parseInt(visibleColor.substring(1, 3), 16);
+        const g1 = parseInt(visibleColor.substring(3, 5), 16);
+        const b1 = parseInt(visibleColor.substring(5, 7), 16);
+        
+        const r2 = parseInt(invisibleColor.substring(1, 3), 16);
+        const g2 = parseInt(invisibleColor.substring(3, 5), 16);
+        const b2 = parseInt(invisibleColor.substring(5, 7), 16);
+        
+        // Blend the colors based on factor
+        const r = Math.round(r2 + (r1 - r2) * factor);
+        const g = Math.round(g2 + (g1 - g2) * factor);
+        const b = Math.round(b2 + (b1 - b2) * factor);
+        
+        // Convert back to hex
+        return #${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')};
+    }
+    
+    // Original functions
+    function checkAnswer(questionId, answer) {
+        // Your existing code here
+    }
+    
+    function closeFakeSite(questionId) {
+        // Your existing code here
+    }
+</script>
+            
+            <!-- Password Section Level 2 -->
+            <div class="password-section" id="password-section-level2">
+                <h3>Time Portal Password</h3>
+                <p>Enter the password to proceed to the next time period:</p>
+                <div class="collected-letters" id="collected-letters-level2">_ _ _</div>
+                <div style="margin-top: 15px;">
+                    <input type="text" class="password-input" id="password-input-level2" maxlength="4">
+                    <button class="btn" onclick="checkPassword(2)">CONFIRM</button>
+                </div>
+                <div class="feedback" id="password-feedback-level2"></div>
+            </div>
+            
+            <div class="level-complete" id="level2-complete">
+                <h2>Time Portal Opening!</h2>
+                <p>You've successfully secured the Modern Era.</p>
+                <button class="btn" onclick="startLevel(3)">ENTER NEXT TIME PERIOD</button>
+            </div>
+        </div>
+        
+        <!-- LEVEL 3: THE FUTURE (2030s and beyond) -->
+        <div class="game-section future" id="level3">
+            <div class="level-intro">
+                <h2>LEVEL 3: FUTURE THREATS (2030s and beyond)</h2>
+                <p>You've traveled to the future where AI and quantum computing have revolutionized both security and threats.</p>
+                <p>Analyze these futuristic communications to identify advanced phishing attacks.</p>
+                <p>Password hint: "The universal currency of the digital age"</p>
+                <div class="time-portal">⧗ Mission Active ⧗</div>
+            </div>
+            
+            <!-- Question 3.1 -->
+            <div class="question-container active" id="q3-1">
+                <h3>Assessment 3.1</h3>
+                <img src="./BrainSync Phish 5.1.jpg" alt="Neural interface update" class="question-image">
+                <p>BrainSync Email</p>
+                <div class="phish-container">
+                    <button class="btn btn-phish" onclick="checkAnswer('q3-1', 'phish')">PHISHING</button>
+                    <button class="btn btn-legit" onclick="checkAnswer('q3-1', 'legit')">LEGITIMATE</button>
+                </div>
+                <div class="feedback" id="feedback-q3-1"></div>
+            </div>
+            
+            <!-- Fake Site for Question 3.1 -->
+            <div class="fake-site" id="fake-site-q3-1">
+                <button class="close-fake-site" onclick="closeFakeSite('q3-1')">X</button>
+                <div style="background-color: #030014; color: #e0e0ff; padding: 20px; font-family: 'Arial';">
+                    <div style="text-align: center; padding: 10px;">
+                        <h2 style="color: #7b68ee; font-size: 32px;">BrainSync OS</h2>
+                        <p style="color: #a0a0ff;">Neural Interface Security Update</p>
+                    </div>
+                    <div style="background-color: rgba(20, 20, 50, 0.8); padding: 20px; border-radius: 15px; border: 1px solid #7b68ee; margin-top: 20px;">
+                        <h3 style="color: #7b68ee;">Critical Security Update</h3>
+                        <p>Your BrainSync OS requires an immediate security update to protect against new quantum-based vulnerabilities.</p>
+                        <p>This update includes protection against the following threats:</p>
+                        <ul style="color: #a0a0ff;">
+                            <li>Neural data interception (Class A)</li>
+                            <li>Memory access exploits (Class B)</li>
+                            <li>Emotional response manipulation (Class C)</li>
+                        </ul>
+                        
+                        <div style="margin-top: 30px; background-color: rgba(10, 10, 30, 0.8); padding: 15px; border-radius: 10px;">
+                            <h4 style="color: #7b68ee;">Required Permissions</h4>
+                            <ul style="color: #a0a0ff;">
+                                <li>Full memory access</li>
+                                <li>Biometric data processing</li>
+                                <li>Financial authentication override</li>
+                                <li>Personal relationship database access</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-top: 30px; text-align: center;">
+                            <button style="background-color: #7b68ee; color: white; padding: 15px 30px; border: none; border-radius: 30px; font-size: 18px; cursor: pointer;">AUTHORIZE UPDATE</button>
+                        </div>
+                        
+                        <p style="margin-top: 40px; font-size: 12px; color: #a0a0ff; text-align: center;">BrainSync OS v12.3.1 • Quantum Enhanced</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <p>Try different keyboard combinations to find the hidden clue</p>
+                    <button class="btn" onclick="document.getElementById('keyboard-hint-q3-1').style.display = 'block'">Show Hint</button>
+                    <div id="keyboard-hint-q3-1" style="display: none; margin-top: 15px;">
+                        <p>Try pressing Ctrl+Alt+D</p>
+                        <button class="btn" onclick="document.getElementById('hidden-clue-q3-1').style.display = 'block'">Simulate Ctrl+Alt+D</button>
+                        <div id="hidden-clue-q3-1" style="display: none; background-color: #030014; color: #7b68ee; padding: 15px; margin-top: 15px; border: 1px solid #7b68ee;">
+                            <p>Secret letter: X</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 3.2 -->
+            <div class="question-container" id="q3-2">
+                <h3>Assessment 3.2</h3>
+                <img src="./Quantum Bank Legit 6.1.jpg" alt="Quantum Bank authentication" class="question-image">
+                <p>Quantum Bank Email</p>
+                <div class="phish-container">
+                    <button class="btn btn-phish" onclick="checkAnswer('q3-2', 'phish')">PHISHING</button>
+                    <button class="btn btn-legit" onclick="checkAnswer('q3-2', 'legit')">LEGITIMATE</button>
+                </div>
+                <div class="feedback" id="feedback-q3-2"></div>
+            </div>
+            
+           <!-- Question 3.3 -->
+<div class="question-container" id="q3-3">
+    <h3>Assessment 3.3</h3>
+    <img src="./UID Phish 6.2.jpg" alt="Neuralink message" class="question-image">
+    <p>UDI Email</p>
+    <div class="phish-container">
+        <button class="btn btn-phish" onclick="checkAnswer('q3-3', 'phish')">PHISHING</button>
+        <button class="btn btn-legit" onclick="checkAnswer('q3-3', 'legit')">LEGITIMATE</button>
+    </div>
+    <div class="feedback" id="feedback-q3-3"></div>
+</div>
+
+<!-- Fake Site for Question 3.3 -->
+<div class="fake-site" id="fake-site-q3-3">
+    <button class="close-fake-site" onclick="closeFakeSite('q3-3')">X</button>
+    <div style="background-color: #000; color: #0ff; padding: 20px; font-family: 'Arial'; background-image: linear-gradient(45deg, #000 25%, #001a1a 25%, #001a1a 50%, #000 50%, #000 75%, #001a1a 75%, #001a1a 100%); background-size: 10px 10px;">
+        <div style="text-align: center; padding: 10px;">
+            <h2 style="color: #0ff; font-size: 32px; text-shadow: 0 0 10px #0ff;">Universal Digital Identity</h2>
+            <p style="color: #0aa; text-transform: uppercase;">Global Verification Protocol</p>
+        </div>
+        <div style="background-color: rgba(0, 20, 20, 0.8); padding: 20px; border-radius: 5px; border: 1px solid #0ff; margin-top: 20px;">
+            <h3 style="color: #0ff;">Identity Verification Required</h3>
+            <p>Your global identity token has been flagged for reverification.</p>
+            <p>Failure to complete this process within 12 hours will result in restricted access to:</p>
+            <ul style="color: #0aa;">
+                <li>Global transportation systems</li>
+                <li>Financial networks</li>
+                <li>Medical service authorization</li>
+                <li>Neural interface connectivity</li>
+            </ul>
+            
+            <div style="margin-top: 30px; background-color: rgba(0, 10, 10, 0.8); padding: 15px; border-radius: 5px;">
+                <h4 style="color: #0ff;">Verification Steps</h4>
+                <ol style="color: #0aa;">
+                    <li>Retinal scan authentication</li>
+                    <li>Thought-password sequence</li>
+                    <li>Neural signature verification</li>
+                    <li>Global identity token refresh</li>
+                </ol>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button style="background-color: #0ff; color: black; padding: 15px 30px; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; text-transform: uppercase; font-weight: bold;">BEGIN VERIFICATION</button>
+            </div>
+        </div>
+        <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #0aa;">
+            <p>Universal Digital Identity Authority • Quantum Secured • Est. 2031</p>
+            <p class="hidden-clue" id="hidden-clue-q3-3" style="color: transparent;">Secret letter: A</p>
+        </div>
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <p>The clue is hidden beneath. Try moving the box to reveal it.</p>
+        <div style="position: relative; width: 200px; height: 80px; margin: 0 auto;">
+            <!-- The hidden content is positioned absolutely UNDER the box -->
+            <div class="hidden-content" id="hidden-content-q3-3" style="position: absolute; top: 0; left: 0; width: 100%; padding: 15px 0; color: #0ff; font-weight: bold; z-index: 1;">
+                Secret letter: N
+            </div>
+            <!-- The movable box is positioned above the content with higher z-index -->
+            <div class="movable-box" id="movable-box-q3-3" style="background-color: #0aa; width: 100%; height: 50px; cursor: move; position: absolute; top: 0; left: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; z-index: 2;">
+                SUBMIT
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Add necessary styles for the movable box */
+    .movable-box {
+        user-select: none;
+        transition: transform 0.1s;
+        background-color: #0aa;
+    }
+    
+    /* Remove hover effect - we only want drag to reveal */
+    .movable-box:hover {
+        /* No hover effect */
+    }
+    
+    /* Alternative draggable implementation using JS */
+    .dragging {
+        opacity: 0.8;
+    }
+    
+    /* Make sure the hidden content is visible */
+    .hidden-content {
+        font-size: 16px;
+        text-shadow: 0 0 5px #0ff;
+    }
+</style>
+
+<script>
+    // Add draggable functionality (more interactive than just hover)
+    document.addEventListener('DOMContentLoaded', function() {
+        const box = document.getElementById('movable-box-q3-3');
+        const hiddenContent = document.getElementById('hidden-content-q3-3');
+        
+        // Initially hide the content (make text transparent)
+        hiddenContent.style.color = 'transparent';
+        
+        // Variables for tracking drag
+        let isDragging = false;
+        let offsetX, offsetY;
+        let hasRevealed = false;
+        
+        // Mouse events for dragging
+        box.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            box.classList.add('dragging');
+            
+            // Calculate offset from the element's top-left corner
+            const rect = box.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            
+            e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            
+            // Move the box
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            
+            box.style.position = 'absolute';
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+            
+            // Reveal hidden content only when box is moved significantly
+            const boxRect = box.getBoundingClientRect();
+            const contentRect = hiddenContent.getBoundingClientRect();
+            
+            // Check if the box has been moved enough to reveal content
+            // We'll check if there's a significant movement from the original position
+            const originalX = parseFloat(getComputedStyle(box).left) || 0;
+            const originalY = parseFloat(getComputedStyle(box).top) || 0;
+            
+            // If moved more than 50px in any direction, reveal the content
+            if (Math.abs(x - originalX) > 30 || Math.abs(y - originalY) > 30) {
+                hiddenContent.style.color = '#0ff'; // Make text visible
+                hasRevealed = true;
             }
         });
-
-        document.getElementById('restart-game').addEventListener('click', () => {
-            // Reset game state
-            currentLevel = 0;
-            currentQuestion = 0;
-            score = 0;
-            collectedLetters = [];
-            levelPasswords = [];
-            
-            // Show intro screen
-            gameCompleteScreen.style.display = 'none';
-            introScreen.style.display = 'block';
-            document.body.className = '';
+        
+        document.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                box.classList.remove('dragging');
+            }
         });
-
-        // Setup option buttons
-        document.querySelectorAll('.option-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const selectedOption = button.dataset.option;
-                checkAnswer(selectedOption);
+        
+        // Touch events for mobile devices
+        box.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            box.classList.add('dragging');
+            
+            const touch = e.touches[0];
+            const rect = box.getBoundingClientRect();
+            offsetX = touch.clientX - rect.left;
+            offsetY = touch.clientY - rect.top;
+            
+            e.preventDefault();
+        });
+        
+        document.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            
+            const touch = e.touches[0];
+            const x = touch.clientX - offsetX;
+            const y = touch.clientY - offsetY;
+            
+            box.style.position = 'absolute';
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+            
+            // Check if the box has been moved enough to reveal content
+            // We'll check if there's a significant movement from the original position
+            const originalX = parseFloat(getComputedStyle(box).left) || 0;
+            const originalY = parseFloat(getComputedStyle(box).top) || 0;
+            
+            // If moved more than 30px in any direction, reveal the content
+            if (Math.abs(x - originalX) > 30 || Math.abs(y - originalY) > 30) {
+                hiddenContent.style.color = '#0ff'; // Make text visible
+                hasRevealed = true;
+            }
+            
+            e.preventDefault();
+        });
+        
+        document.addEventListener('touchend', function() {
+            if (isDragging) {
+                isDragging = false;
+                box.classList.remove('dragging');
+            }
+        });
+    });
+</script>
+            
+            <!-- Password Section Level 3 -->
+            <div class="password-section" id="password-section-level3">
+                <h3>Time Portal Password</h3>
+                <p>Enter the password to complete your mission:</p>
+                <div class="collected-letters" id="collected-letters-level3">_ _ _</div>
+                <div style="margin-top: 15px;">
+                    <input type="text" class="password-input" id="password-input-level3" maxlength="4">
+                    <button class="btn" onclick="checkPassword(3)">CONFIRM</button>
+                </div>
+                <div class="feedback" id="password-feedback-level3"></div>
+            </div>
+            
+            <div class="level-complete" id="level3-complete">
+                <h2>Time Portal Opening!</h2>
+                <p>You've successfully secured the Future Era.</p>
+                <button class="btn" onclick="completeGame()">RETURN TO TEMPORAL HEADQUARTERS</button>
+            </div>
+        </div>
+        
+        <!-- GAME COMPLETION -->
+        <div class="game-complete" id="game-complete">
+            <h1>MISSION ACCOMPLISHED!</h1>
+            <p>Congratulations, Time Agent! You've successfully identified and neutralized phishing threats across multiple time periods.</p>
+            <div class="score-display" id="final-score">Your final score: 0/9</div>
+            <p>Your vigilance has protected the timeline from digital corruption.</p>
+            <button class="play-again" onclick="resetGame()">NEW MISSION</button>
+        </div>
+    </div>
+    
+    <script>
+        // Game state
+        const gameState = {
+            currentLevel: 0,
+            currentQuestion: {},
+            score: 0,
+            maxScore: 9,
+            collectedLetters: {
+                level1: {},
+                level2: {},
+                level3: {}
+            },
+            passwords: {
+                level1: "AGO",
+                level2: "PRS",
+                level3: "NXT"
+            }
+        };
+        
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('start-game').addEventListener('click', function() {
+                startLevel(1);
             });
         });
-
-        // Game functions
+        
+        // Start specified level
         function startLevel(level) {
-            currentLevel = level;
-            currentQuestion = 0;
-            collectedLetters = [];
-            
-            // Set appropriate class for time period styling
-            document.body.className = gameData.levels[level].class;
-            
-            gameArea.style.display = 'block';
-            displayQuestion();
-            updateLevelBadge();
-        }
-
-        function displayQuestion() {
-            const question = gameData.levels[currentLevel].questions[currentQuestion];
-            document.getElementById('question-title').textContent = question.title;
-            document.getElementById('question-description').textContent = question.description;
-            
-            // Update the image placeholder with description
-            const imageContainer = document.getElementById('question-image');
-            imageContainer.innerHTML = `
-                <img src="${question.image}" alt="Phishing example" />
-                <p style="font-size: 12px; color: #777; text-align: left; margin-top: 10px;">
-                    <strong>What you're seeing:</strong> ${question.imageDesc}
-                </p>
-            `;
-            
-            // Update progress bar
-            const progressPercent = (currentQuestion / gameData.levels[currentLevel].questions.length) * 100;
-            document.getElementById('level-progress').style.width = `${progressPercent}%`;
-            
-            // Reset option buttons
-            document.querySelectorAll('.option-btn').forEach(button => {
-                button.disabled = false;
-                button.style.opacity = '1';
+            // Hide all sections
+            document.querySelectorAll('.game-section').forEach(section => {
+                section.classList.remove('active');
             });
-        }
-
-        function checkAnswer(selectedOption) {
-            const question = gameData.levels[currentLevel].questions[currentQuestion];
-            const isCorrect = selectedOption === question.correctAnswer;
-            const feedbackContainer = document.getElementById('feedback-container');
-            const feedbackText = document.getElementById('feedback-text');
-            const letterEarned = document.getElementById('letter-earned');
-            const letterValue = document.getElementById('letter-value');
             
-            // Disable option buttons
-            document.querySelectorAll('.option-btn').forEach(button => {
-                button.disabled = true;
-                button.style.opacity = '0.7';
+            // Hide intro
+            document.getElementById('game-intro').classList.remove('active');
+            
+            // Show selected level
+            document.getElementById('level' + level).classList.add('active');
+            
+            // Reset current level questions
+            document.querySelectorAll('#level' + level + ' .question-container').forEach((question, index) => {
+                if (index === 0) {
+                    question.classList.add('active');
+                } else {
+                    question.classList.remove('active');
+                }
             });
+            
+            // Update game state
+            gameState.currentLevel = level;
+        }
+        
+        // Check answer for current question
+        function checkAnswer(questionId, answer) {
+            const correctAnswers = {
+                'q1-1': 'phish',
+                'q1-2': 'legit',
+                'q1-3': 'phish',
+                'q2-1': 'phish',
+                'q2-2': 'legit',
+                'q2-3': 'phish',
+                'q3-1': 'phish',
+                'q3-2': 'legit',
+                'q3-3': 'phish'
+            };
+            
+            const isCorrect = answer === correctAnswers[questionId];
+            const feedbackElement = document.getElementById('feedback-' + questionId);
             
             if (isCorrect) {
-                feedbackContainer.className = 'feedback correct';
-                feedbackText.textContent = `Correct! ${question.explanation}`;
-                letterEarned.style.display = 'block';
-                letterValue.textContent = question.letterReward;
-                collectedLetters.push(question.letterReward);
-                score++;
+                gameState.score++;
+                feedbackElement.innerHTML = '<p>Correct! This is ' + (answer === 'phish' ? 'a phishing attempt' : 'legitimate') + '.</p>';
+                feedbackElement.className = 'feedback correct';
                 
-                // Update score display
-                document.getElementById('current-score').textContent = score;
+                // If it's a phishing attempt, show the fake site
+                if (answer === 'phish') {
+                    setTimeout(() => {
+                        showFakeSite(questionId);
+                    }, 1000);
+                } else {
+                    // If legitimate, add letter directly
+                    addLetterToLevel(questionId);
+                    moveToNextQuestion(questionId);
+                }
             } else {
-                feedbackContainer.className = 'feedback incorrect';
-                feedbackText.textContent = `Incorrect. ${question.explanation}`;
-                letterEarned.style.display = 'none';
+                feedbackElement.innerHTML = '<p>Incorrect. This is actually ' + (correctAnswers[questionId] === 'phish' ? 'a phishing attempt' : 'legitimate') + '.</p>';
+                feedbackElement.className = 'feedback incorrect';
+                
+                // If it's a phishing attempt, show the fake site anyway
+                if (correctAnswers[questionId] === 'phish') {
+                    setTimeout(() => {
+                        showFakeSite(questionId);
+                    }, 1000);
+                } else {
+                    // If legitimate, add letter directly
+                    addLetterToLevel(questionId);
+                    moveToNextQuestion(questionId);
+                }
             }
             
-            feedbackContainer.style.display = 'block';
+            feedbackElement.style.display = 'block';
         }
-
-        function showPasswordEntry() {
-            gameArea.style.display = 'none';
-            passwordContainer.style.display = 'block';
+        
+        // Add letter to current level
+        function addLetterToLevel(questionId) {
+            const letters = {
+                'q1-1': 'O',
+                'q1-2': 'A',
+                'q1-3': 'G',
+                'q2-1': 'R',
+                'q2-2': 'P',
+                'q2-3': 'S',
+                'q3-1': 'X',
+                'q3-2': 'T',
+                'q3-3': 'N'
+            };
             
-            // Display collected letters
-            document.getElementById('collected-letters').textContent = collectedLetters.join(' ');
+            const level = questionId.split('-')[0].replace('q', '');
+            const questionNum = questionId.split('-')[1];
             
-            // Reset password input and feedback
-            document.getElementById('password-input').value = '';
-            document.getElementById('password-feedback').style.display = 'none';
+            gameState.collectedLetters['level' + level][questionNum] = letters[questionId];
+            updateCollectedLetters(level);
         }
-
-        function showLevelComplete() {
-            const levelScore = document.querySelectorAll('.feedback.correct').length;
-            document.getElementById('level-score').textContent = `${levelScore}/4`;
-            document.getElementById('level-password').textContent = gameData.levels[currentLevel].password;
+        
+        // Update collected letters display
+        function updateCollectedLetters(level) {
+            const letters = gameState.collectedLetters['level' + level];
+            let displayText = '';
             
-            levelCompleteScreen.style.display = 'block';
-        }
-
-        function showGameComplete() {
-            gameCompleteScreen.style.display = 'block';
-            document.getElementById('final-score').textContent = score;
-            
-            // Display rank based on score
-            const playerRank = document.getElementById('player-rank');
-            if (score >= 10) {
-                playerRank.textContent = 'Master Time Agent';
-            } else if (score >= 7) {
-                playerRank.textContent = 'Senior Time Agent';
-            } else if (score >= 4) {
-                playerRank.textContent = 'Time Agent';
-            } else {
-                playerRank.textContent = 'Time Agent Trainee';
+            for (let i = 1; i <= 3; i++) {
+                if (letters[i]) {
+                    displayText += letters[i] + ' ';
+                } else {
+                    displayText += '_ ';
+                }
             }
             
-            // Display all passwords
-            document.getElementById('past-password').textContent = levelPasswords[0] || 'Not completed';
-            document.getElementById('present-password').textContent = levelPasswords[1] || 'Not completed';
-            document.getElementById('future-password').textContent = levelPasswords[2] || 'Not completed';
+            document.getElementById('collected-letters-level' + level).textContent = displayText.trim();
         }
-
-        function updateLevelBadge() {
-            const levelName = gameData.levels[currentLevel].name;
-            document.getElementById('current-level-badge').textContent = `Level ${currentLevel + 1}: ${levelName}`;
+        
+        // Move to next question
+        function moveToNextQuestion(questionId) {
+            const level = questionId.split('-')[0].replace('q', '');
+            const questionNum = parseInt(questionId.split('-')[1]);
+            const nextQuestionNum = questionNum + 1;
+            
+            const currentQuestion = document.getElementById(questionId);
+            const nextQuestion = document.getElementById('q' + level + '-' + nextQuestionNum);
+            
+            // Hide current question after a delay
+            setTimeout(() => {
+                currentQuestion.classList.remove('active');
+                
+                // If there's a next question, show it
+                if (nextQuestion) {
+                    nextQuestion.classList.add('active');
+                } else {
+                    // If no more questions, show password section
+                    document.getElementById('password-section-level' + level).style.display = 'block';
+                }
+            }, 1500);
+        }
+        
+        // Show fake phishing site
+        function showFakeSite(questionId) {
+            document.getElementById('fake-site-' + questionId).style.display = 'block';
+        }
+        
+        // Close fake site
+        function closeFakeSite(questionId) {
+            document.getElementById('fake-site-' + questionId).style.display = 'none';
+            
+            // Add letter to collected letters
+            addLetterToLevel(questionId);
+            
+            // Move to next question
+            moveToNextQuestion(questionId);
+        }
+        
+        // Check password
+        function checkPassword(level) {
+            const password = document.getElementById('password-input-level' + level).value.toUpperCase();
+            const correctPassword = gameState.passwords['level' + level];
+            const feedbackElement = document.getElementById('password-feedback-level' + level);
+            
+            if (password === correctPassword) {
+                feedbackElement.innerHTML = '<p>Correct! Time portal opening...</p>';
+                feedbackElement.className = 'feedback correct';
+                
+                // Show level completion
+                setTimeout(() => {
+                    document.getElementById('password-section-level' + level).style.display = 'none';
+                    document.getElementById('level' + level + '-complete').style.display = 'block';
+                }, 1500);
+            } else {
+                feedbackElement.innerHTML = '<p>Incorrect password. Try again.</p>';
+                feedbackElement.className = 'feedback incorrect';
+            }
+            
+            feedbackElement.style.display = 'block';
+        }
+        
+        // Complete game
+        function completeGame() {
+            document.querySelectorAll('.game-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.getElementById('final-score').textContent = 'Your final score: ' + gameState.score + '/' + gameState.maxScore;
+            document.getElementById('game-complete').style.display = 'block';
+        }
+        
+        // Reset game
+        function resetGame() {
+            gameState.currentLevel = 0;
+            gameState.score = 0;
+            gameState.collectedLetters = {
+                level1: {},
+                level2: {},
+                level3: {}
+            };
+            
+            document.getElementById('game-complete').style.display = 'none';
+            document.getElementById('game-intro').classList.add('active');
+            
+            // Reset all questions
+            document.querySelectorAll('.question-container').forEach(question => {
+                question.classList.remove('active');
+            });
+            
+            // Reset all feedback
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.style.display = 'none';
+                feedback.innerHTML = '';
+            });
+            
+            // Reset all fake sites
+            document.querySelectorAll('.fake-site').forEach(site => {
+                site.style.display = 'none';
+            });
+            
+            // Reset all password sections
+            document.querySelectorAll('.password-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Reset all level completion sections
+            document.querySelectorAll('.level-complete').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Reset all password inputs
+            document.querySelectorAll('.password-input').forEach(input => {
+                input.value = '';
+            });
+            
+            // Reset all collected letters displays
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('collected-letters-level' + i).textContent = '_ _ _';
+            }
+        }
+        
+        // Adjust brightness for hidden clues
+        function adjustBrightness(value, questionId) {
+            const fakeSite = document.getElementById('fake-site-' + questionId);
+            const hiddenText = fakeSite.querySelector('.hidden-bright-text');
+            
+            if (value > 80) {
+                hiddenText.style.color = 'rgba(255, 255, 255, 0.8)';
+            } else {
+                hiddenText.style.color = 'rgba(255, 255, 255, 0.05)';
+            }
         }
     </script>
 </body>
